@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class Calculator {
@@ -17,13 +18,45 @@ public class Calculator {
         return 0;
     }
 
-    double calculate(StringBuilder expressionWithoutHooks) { // expressionWithoutHooks == (1+3*2)
-        ArrayList<String> terms = parseTerms(expressionWithoutHooks);
-        String previous;
-        for (String term : terms) {
-
+    double calculate(StringBuilder expressionWithoutHooks) { // expressionWithoutHooks == (-1+3*2)
+        ArrayList<String> terms = parseTerms(expressionWithoutHooks); // '-1' '+' '3' '*' '2'
+        while (terms.contains("*") || terms.contains("/")) {
+            for (int i = 0; i < terms.size(); i++) {
+                if (terms.get(i).equals("*")) {
+                    double resOfMul = Double.parseDouble(terms.get(i-1)) * Double.parseDouble(terms.get(i+1));
+                    terms.set(i, Double.toString(resOfMul));
+                    terms.remove(i-1);
+                    terms.remove(i+1);
+                    break;
+                }
+                else if (terms.get(i).equals("/")) {
+                    double resOfDiv = Double.parseDouble(terms.get(i-1)) / Double.parseDouble(terms.get(i+1));
+                    terms.set(i, Double.toString(resOfDiv));
+                    terms.remove(i-1);
+                    terms.remove(i+1);
+                    break;
+                }
+            }
         }
-        return 0;
+        while (terms.contains("+") || terms.contains("-")) {
+            for (int i = 0; i < terms.size(); i++) {
+                if (terms.get(i).equals("+")) {
+                    double resOfMul = Double.parseDouble(terms.get(i-1)) + Double.parseDouble(terms.get(i+1));
+                    terms.set(i, Double.toString(resOfMul));
+                    terms.remove(i-1);
+                    terms.remove(i+1);
+                    break;
+                }
+                else if (terms.get(i).equals("-")) {
+                    double resOfDiv = Double.parseDouble(terms.get(i-1)) - Double.parseDouble(terms.get(i+1));
+                    terms.set(i, Double.toString(resOfDiv));
+                    terms.remove(i-1);
+                    terms.remove(i+1);
+                    break;
+                }
+            }
+        }
+        return Double.parseDouble(terms.get(0));
     }
 
 
