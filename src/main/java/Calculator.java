@@ -4,21 +4,26 @@ import java.util.List;
 
 public class Calculator {
 
-    double parse(StringBuilder expression) { //expression == (2+3+1*4-(3/2))
+    static double calculate(String expression) {
+        return parse(new StringBuilder(expression));
+    }
+
+    static private double parse(StringBuilder expression) { //expression == (2+3+1*4-(3/2))
         int indexHookOpen, indexHookClose;
         do {
             indexHookOpen = expression.indexOf("(", 1);
             indexHookClose = expression.indexOf(")");
-            if (indexHookOpen < indexHookClose && indexHookOpen != -1) {
-                parse(new StringBuilder(expression.substring(indexHookOpen,indexHookClose)));
+            double d;
+            if (indexHookOpen < indexHookClose && indexHookOpen != -1 && indexHookClose != -1) {
+                d = parse(new StringBuilder(expression.substring(indexHookOpen,indexHookClose)));
+                expression.delete(indexHookOpen,indexHookClose);
+                expression.insert(indexHookOpen, Double.toString(d));
             }
         } while (indexHookOpen < indexHookClose && indexHookOpen != -1);
-
-
-        return 0;
+        return calculateHooks(expression);
     }
 
-    double calculate(StringBuilder expressionWithoutHooks) { // expressionWithoutHooks == (-1+3*2)
+    static private double calculateHooks(StringBuilder expressionWithoutHooks) { // expressionWithoutHooks == (-1+3*2)
         ArrayList<String> terms = parseTerms(expressionWithoutHooks); // '-1' '+' '3' '*' '2'
         while (terms.contains("*") || terms.contains("/")) {
             for (int i = 0; i < terms.size(); i++) {
@@ -60,7 +65,7 @@ public class Calculator {
     }
 
 
-    ArrayList<String> parseTerms(StringBuilder expressionWithoutHooks) {  // expressionWithoutHooks == (1+3*2)
+    static private ArrayList<String> parseTerms(StringBuilder expressionWithoutHooks) {  // expressionWithoutHooks == (1+3*2)
         ArrayList<String> res = new ArrayList<>();
         String tmp = "";
         char[] chars = expressionWithoutHooks.toString().toCharArray();
