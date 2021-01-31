@@ -1,6 +1,4 @@
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 public class Calculator {
 
@@ -8,26 +6,38 @@ public class Calculator {
         return parse(new StringBuilder("(" + expression + ")"));
     }
 
-    static private double parse(StringBuilder expression) { //expression == 2+3+1*4-(3/2)
-        int indexHookOpen, indexHookClose;
-        indexHookClose = expression.indexOf(")");
-        indexHookOpen  = expression.substring(0,indexHookClose).lastIndexOf("(");
+    //expression == (3+(-1+3*-2))
+    static private double parse(StringBuilder expression) {
+        int indexOpen, indexClose;
+        do {
+            indexClose = expression.indexOf(")");
+            if (indexClose != -1)
+                indexOpen  = expression.substring(0,indexClose).lastIndexOf("(");
+            else
+                indexOpen  = expression.lastIndexOf("(");
 
-        while (indexHookClose != -1 && indexHookOpen != -1) {
-            System.out.println(expression.toString());
-            double d = calculateWithoutHooks(new StringBuilder(expression.substring(indexHookOpen+1,indexHookClose)));
-            expression.delete(indexHookOpen,indexHookClose+1);
-            expression.insert(indexHookOpen, Double.toString(d));
-            indexHookClose = expression.indexOf(")");
-            if (indexHookClose != -1)
-                indexHookOpen  = expression.substring(0,indexHookClose).lastIndexOf("(");
-        }
+            if (indexClose != -1 && indexOpen != -1) {
+                System.out.println(expression.toString());
+                double d = calculateWithoutBracket(new StringBuilder(expression.substring(indexOpen+1,indexClose)));
+                expression.delete(indexOpen,indexClose+1);
+                expression.insert(indexOpen, Double.toString(d));
+            }
+            else if (indexClose == -1 && indexOpen == -1)
+                break;
+            else if (indexClose == -1)
+                throw new RuntimeException("Requare )");
+            else if (indexOpen == -1)
+                throw new RuntimeException("Requare (");
+
+        } while (true);
+
         System.out.println(expression.toString());
         return Double.parseDouble(expression.toString());
     }
 
-    static private double calculateWithoutHooks(StringBuilder expressionWithoutHooks) { // expressionWithoutHooks == (-1+3*2)
-        ArrayList<String> terms = parseTerms(expressionWithoutHooks); // '-1' '+' '3' '*' '2'
+    // expressionWithoutBracket == -1+3*-2
+    static private double calculateWithoutBracket(StringBuilder expressionWithoutBracket) {
+        ArrayList<String> terms = parseTerms(expressionWithoutBracket); // '-1' '+' '3' '*' '-2'
         while (terms.contains("*") || terms.contains("/")) {
             for (int i = 0; i < terms.size(); i++) {
                 if (terms.get(i).equals("*")) {
@@ -67,12 +77,13 @@ public class Calculator {
         return Double.parseDouble(terms.get(0));
     }
 
-    static private ArrayList<String> parseTerms(StringBuilder expressionWithoutHooks) {  // expressionWithoutHooks == 1+3*2
-        if (!checkExpressionWithoutHooks(expressionWithoutHooks.toString()))
-            throw new RuntimeException("Illegal expression: " + expressionWithoutHooks.toString());
+    // expressionWithoutBracket == -1+3*-2
+    static private ArrayList<String> parseTerms(StringBuilder expressionWithoutBracket) {
+        if (!checkExpressionWithoutHooks(expressionWithoutBracket.toString()))
+            throw new RuntimeException("Illegal expression: " + expressionWithoutBracket.toString());
 
         ArrayList<String> terms = new ArrayList<>();
-        char[] chars = expressionWithoutHooks.toString().toCharArray();
+        char[] chars = expressionWithoutBracket.toString().toCharArray();
         StringBuilder term = new StringBuilder();
 
         for (Character i : chars) {
