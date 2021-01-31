@@ -18,7 +18,7 @@ public class Calculator {
 
             if (indexClose != -1 && indexOpen != -1) {
                 System.out.println(expression.toString());
-                double d = calculateWithoutBracket(new StringBuilder(expression.substring(indexOpen+1,indexClose)));
+                double d = calculateWithoutBrackets(new StringBuilder(expression.substring(indexOpen+1,indexClose)));
                 expression.delete(indexOpen,indexClose+1);
                 expression.insert(indexOpen, Double.toString(d));
             }
@@ -35,9 +35,9 @@ public class Calculator {
         return Double.parseDouble(expression.toString());
     }
 
-    // expressionWithoutBracket == -1+3*-2
-    static private double calculateWithoutBracket(StringBuilder expressionWithoutBracket) {
-        ArrayList<String> terms = parseTerms(expressionWithoutBracket); // '-1' '+' '3' '*' '-2'
+    // expressionWithoutBrackets == -1+3*-2
+    static private double calculateWithoutBrackets(StringBuilder expressionWithoutBrackets) {
+        ArrayList<String> terms = parseTerms(expressionWithoutBrackets); // '-1' '+' '3' '*' '-2'
         while (terms.contains("*") || terms.contains("/")) {
             for (int i = 0; i < terms.size(); i++) {
                 if (terms.get(i).equals("*")) {
@@ -77,13 +77,13 @@ public class Calculator {
         return Double.parseDouble(terms.get(0));
     }
 
-    // expressionWithoutBracket == -1+3*-2
-    static private ArrayList<String> parseTerms(StringBuilder expressionWithoutBracket) {
-        if (!checkExpressionWithoutHooks(expressionWithoutBracket.toString()))
-            throw new RuntimeException("Illegal expression: " + expressionWithoutBracket.toString());
+    // expressionWithoutBrackets == -1+3*-2
+    static private ArrayList<String> parseTerms(StringBuilder expressionWithoutBrackets) {
+        if (!checkExpressionWithoutBrackets(expressionWithoutBrackets.toString()))
+            throw new RuntimeException("Illegal expression: " + expressionWithoutBrackets.toString());
 
         ArrayList<String> terms = new ArrayList<>();
-        char[] chars = expressionWithoutBracket.toString().toCharArray();
+        char[] chars = expressionWithoutBrackets.toString().toCharArray();
         StringBuilder term = new StringBuilder();
 
         for (Character i : chars) {
@@ -106,8 +106,8 @@ public class Calculator {
         return terms;
     }
 
-    static private boolean checkExpressionWithoutHooks(String expressionWithoutHooks) {
-        return expressionWithoutHooks.matches(
+    static private boolean checkExpressionWithoutBrackets(String expressionWithoutBrackets) {
+        return expressionWithoutBrackets.matches(
                 "(((\\+|-)?\\d+\\.?\\d+)|((\\+|-)?\\d+)){1}" +
                 "(((\\+|-|\\*|/)(\\+|-)?\\d+\\.?\\d+)|((\\+|-|\\*|/)(\\+|-)?\\d+))*");
     }
