@@ -5,23 +5,25 @@ import java.util.List;
 public class Calculator {
 
     static double calculate(String expression) {
-        return parse(new StringBuilder(expression));
+        return parse(new StringBuilder("(" + expression + ")"));
     }
 
     static private double parse(StringBuilder expression) { //expression == 2+3+1*4-(3/2)
         int indexHookOpen, indexHookClose;
-        do {
-            indexHookOpen = expression.indexOf("(");
+        indexHookClose = expression.indexOf(")");
+        indexHookOpen  = expression.substring(0,indexHookClose).lastIndexOf("(");
+
+        while (indexHookClose != -1 && indexHookOpen != -1) {
+            System.out.println(expression.toString());
+            double d = calculateWithoutHooks(new StringBuilder(expression.substring(indexHookOpen+1,indexHookClose)));
+            expression.delete(indexHookOpen,indexHookClose+1);
+            expression.insert(indexHookOpen, Double.toString(d));
             indexHookClose = expression.indexOf(")");
-            double d;
-            if (indexHookOpen < indexHookClose && indexHookOpen != -1 && indexHookClose != -1) {
-                d = parse(new StringBuilder(expression.substring(indexHookOpen+1,indexHookClose)));
-                expression.delete(indexHookOpen,indexHookClose+1);
-                expression.insert(indexHookOpen, Double.toString(d));
-                System.out.println(expression.toString());
-            }
-        } while (indexHookOpen < indexHookClose && indexHookOpen != -1 && indexHookClose != -1);
-        return calculateWithoutHooks(expression);
+            if (indexHookClose != -1)
+                indexHookOpen  = expression.substring(0,indexHookClose).lastIndexOf("(");
+        }
+        System.out.println(expression.toString());
+        return Double.parseDouble(expression.toString());
     }
 
     static private double calculateWithoutHooks(StringBuilder expressionWithoutHooks) { // expressionWithoutHooks == (-1+3*2)
@@ -66,17 +68,36 @@ public class Calculator {
     }
 
     static private ArrayList<String> parseTerms(StringBuilder expressionWithoutHooks) {  // expressionWithoutHooks == 1+3*2
-        ArrayList<String> res = new ArrayList<>();
-        char[] chars = expressionWithoutHooks.toString().toCharArray();
-        String input = expressionWithoutHooks.toString();
-        boolean result = input.matches(
-                "(((\\+|-)?\\d+\\.?\\d+)|((\\+|-)?\\d+)){1}" +
-                        "(((\\+|-|\\*|/)(\\+|-)?\\d+\\.?\\d+)|((\\+|-|\\*|/)(\\+|-)?\\d+))*");
-        String tmp = "";
-        int numberOfOperation = 0;
-        for (Character i : chars) {
+        if (!checkExpressionWithoutHooks(expressionWithoutHooks.toString()))
+            throw new RuntimeException("Illegal expression: " + expressionWithoutHooks.toString());
 
+        ArrayList<String> terms = new ArrayList<>();
+        char[] chars = expressionWithoutHooks.toString().toCharArray();
+        StringBuilder term = new StringBuilder();
+
+        for (Character i : chars) {
+            if (i == '+' || i == '-' || i == '*' || i == '/') {
+                if (term.length() == 0) {
+                    if (i == '-') {
+                        term.append(i);
+                    }
+                } else {
+                    terms.add(term.toString());
+                    terms.add(Character.toString(i));
+                    term = new StringBuilder();
+                }
+            }
+            else { // i == '0-9', '.'
+                term.append(i);
+            }
         }
-        return res;
+        terms.add(term.toString());
+        return terms;
+    }
+
+    static private boolean checkExpressionWithoutHooks(String expressionWithoutHooks) {
+        return expressionWithoutHooks.matches(
+                "(((\\+|-)?\\d+\\.?\\d+)|((\\+|-)?\\d+)){1}" +
+                "(((\\+|-|\\*|/)(\\+|-)?\\d+\\.?\\d+)|((\\+|-|\\*|/)(\\+|-)?\\d+))*");
     }
 }
