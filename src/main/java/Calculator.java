@@ -71,11 +71,11 @@ public class Calculator {
         String input = expressionWithoutHooks.toString();
         boolean result = input.matches(
                 "(((\\+|-)?\\d+\\.?\\d+)|((\\+|-)?\\d+)){1}" +
-                        "(((\\+|-|\\*|/)+(\\+|-)?\\d+\\.?\\d+)|((\\+|-|\\*|/)+(\\+|-)?\\d+))*");
+                        "(((\\+|-|\\*|/)(\\+|-)?\\d+\\.?\\d+)|((\\+|-|\\*|/)(\\+|-)?\\d+))*");
         String tmp = "";
         int numberOfOperation = 0;
         for (Character i : chars) {
-            
+
         }
         return res;
     }
