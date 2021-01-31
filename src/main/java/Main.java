@@ -15,7 +15,7 @@ public class Main {
                 double res = Calculator.calculate(input);
             }
             catch (RuntimeException ex) {
-                System.out.println(ex.toString());
+                System.out.println(ex.getMessage());
             }
         } while (true);
     }
