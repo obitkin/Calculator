@@ -12,7 +12,7 @@ public class Main {
             if (input.equals("q"))
                 break;
             try {
-                double res = Calculator.calculate(input);
+                System.out.println(Calculator.calculate(input));
             }
             catch (RuntimeException ex) {
                 System.out.println(ex.getMessage());

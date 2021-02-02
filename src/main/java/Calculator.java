@@ -19,32 +19,33 @@ public class Calculator {
 
             if (indexClose != -1 && indexOpen != -1) {
                 resOfTerm = calculateWithoutBrackets(new StringBuilder(expression.substring(indexOpen+1,indexClose)));
-                expression.delete(indexOpen,indexClose+1);
-                expression.insert(indexOpen, Double.toString(resOfTerm));
-                System.out.println(expression.toString());
-            }
-            else if (indexClose == -1 && indexOpen == -1) {
-                resOfTerm = calculateWithoutBrackets(expression);
-                try {
-                    Double resOfExpression = Double.parseDouble(expression.toString());
-                    if (resOfTerm.equals(resOfExpression)) {
-                        break;
+                if (indexOpen-1 >= 0 && resOfTerm < 0) {
+                    if (expression.substring(indexOpen-1,indexOpen).equals("+")) {
+                        expression.delete(indexOpen-1,indexClose+1);
+                        expression.insert(indexOpen-1, Double.toString(resOfTerm));
                     }
-                } catch (NumberFormatException ex) {
-                    expression.delete(0,expression.length());
-                    expression.insert(0, Double.toString(resOfTerm));
-                    System.out.println(expression.toString());
-                    break;
+                    else if (expression.substring(indexOpen-1,indexOpen).equals("-")){
+                        expression.delete(indexOpen-1,indexClose+1);
+                        expression.insert(indexOpen-1, "+" + Double.toString(-resOfTerm));
+                    }
+                    else {
+                        expression.delete(indexOpen,indexClose+1);
+                        expression.insert(indexOpen, Double.toString(resOfTerm));
+                    }
+                }
+                else {
+                    expression.delete(indexOpen,indexClose+1);
+                    expression.insert(indexOpen, Double.toString(resOfTerm));
                 }
             }
+            else if (indexClose == -1 && indexOpen == -1)
+                return calculateWithoutBrackets(expression);
             else if (indexClose == -1)
                 throw new RuntimeException("Requare \")\"");
             else if (indexOpen == -1)
                 throw new RuntimeException("Requare \"(\"");
 
         } while (true);
-
-        return Double.parseDouble(expression.toString());
     }
 
     // expressionWithoutBrackets == -1+3*-2
