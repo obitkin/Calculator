@@ -3,12 +3,13 @@ import java.util.ArrayList;
 public class Calculator {
 
     static double calculate(String expression) {
-        return parse(new StringBuilder("(" + expression + ")"));
+        return parse(new StringBuilder(expression));
     }
 
     //expression == (3+(-1+3*-2))
     static private double parse(StringBuilder expression) {
         int indexOpen, indexClose;
+        Double resOfTerm;
         do {
             indexClose = expression.indexOf(")");
             if (indexClose != -1)
@@ -17,21 +18,32 @@ public class Calculator {
                 indexOpen  = expression.lastIndexOf("(");
 
             if (indexClose != -1 && indexOpen != -1) {
-                System.out.println(expression.toString());
-                double d = calculateWithoutBrackets(new StringBuilder(expression.substring(indexOpen+1,indexClose)));
+                resOfTerm = calculateWithoutBrackets(new StringBuilder(expression.substring(indexOpen+1,indexClose)));
                 expression.delete(indexOpen,indexClose+1);
-                expression.insert(indexOpen, Double.toString(d));
+                expression.insert(indexOpen, Double.toString(resOfTerm));
+                System.out.println(expression.toString());
             }
-            else if (indexClose == -1 && indexOpen == -1)
-                break;
+            else if (indexClose == -1 && indexOpen == -1) {
+                resOfTerm = calculateWithoutBrackets(expression);
+                try {
+                    Double resOfExpression = Double.parseDouble(expression.toString());
+                    if (resOfTerm.equals(resOfExpression)) {
+                        break;
+                    }
+                } catch (NumberFormatException ex) {
+                    expression.delete(0,expression.length());
+                    expression.insert(0, Double.toString(resOfTerm));
+                    System.out.println(expression.toString());
+                    break;
+                }
+            }
             else if (indexClose == -1)
-                throw new RuntimeException("Requare )");
+                throw new RuntimeException("Requare \")\"");
             else if (indexOpen == -1)
-                throw new RuntimeException("Requare (");
+                throw new RuntimeException("Requare \"(\"");
 
         } while (true);
 
-        System.out.println(expression.toString());
         return Double.parseDouble(expression.toString());
     }
 
@@ -80,7 +92,7 @@ public class Calculator {
     // expressionWithoutBrackets == -1+3*-2
     static private ArrayList<String> parseTerms(StringBuilder expressionWithoutBrackets) {
         if (!checkExpressionWithoutBrackets(expressionWithoutBrackets.toString()))
-            throw new RuntimeException("Illegal expression: " + expressionWithoutBrackets.toString());
+            throw new RuntimeException("Illegal expression: \"" + expressionWithoutBrackets.toString() + '\"');
 
         ArrayList<String> terms = new ArrayList<>();
         char[] chars = expressionWithoutBrackets.toString().toCharArray();
