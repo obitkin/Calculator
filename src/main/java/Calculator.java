@@ -20,11 +20,11 @@ public class Calculator {
             if (indexClose != -1 && indexOpen != -1) {
                 resOfTerm = calculateWithoutBrackets(new StringBuilder(expression.substring(indexOpen+1,indexClose)));
                 if (indexOpen-1 >= 0 && resOfTerm < 0) {
-                    if (expression.substring(indexOpen-1,indexOpen).equals("+")) {
+                    if (expression.charAt(indexOpen-1) == '+') {
                         expression.delete(indexOpen-1,indexClose+1);
                         expression.insert(indexOpen-1, Double.toString(resOfTerm));
                     }
-                    else if (expression.substring(indexOpen-1,indexOpen).equals("-")){
+                    else if (expression.charAt(indexOpen-1) == '-'){
                         expression.delete(indexOpen-1,indexClose+1);
                         expression.insert(indexOpen-1, "+" + Double.toString(-resOfTerm));
                     }
