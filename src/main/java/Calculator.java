@@ -41,9 +41,9 @@ public class Calculator {
             else if (indexClose == -1 && indexOpen == -1)
                 return calculateWithoutBrackets(expression);
             else if (indexClose == -1)
-                throw new RuntimeException("Requare \")\"");
+                throw new RuntimeException("Require \")\"");
             else if (indexOpen == -1)
-                throw new RuntimeException("Requare \"(\"");
+                throw new RuntimeException("Require \"(\"");
 
         } while (true);
     }
@@ -53,14 +53,14 @@ public class Calculator {
         ArrayList<String> terms = parseTerms(expressionWithoutBrackets); // '-1' '+' '3' '*' '-2'
         while (terms.contains("*") || terms.contains("/")) {
             for (int i = 0; i < terms.size(); i++) {
-                if (terms.get(i).equals("*")) {
+                if ("*".equals(terms.get(i))) {
                     double resOfMul = Double.parseDouble(terms.get(i-1)) * Double.parseDouble(terms.get(i+1));
                     terms.set(i, Double.toString(resOfMul));
                     terms.remove(i+1);
                     terms.remove(i-1);
                     break;
                 }
-                else if (terms.get(i).equals("/")) {
+                else if ("/".equals(terms.get(i))) {
                     double resOfDiv = Double.parseDouble(terms.get(i-1)) / Double.parseDouble(terms.get(i+1));
                     terms.set(i, Double.toString(resOfDiv));
                     terms.remove(i+1);
@@ -71,14 +71,14 @@ public class Calculator {
         }
         while (terms.contains("+") || terms.contains("-")) {
             for (int i = 0; i < terms.size(); i++) {
-                if (terms.get(i).equals("+")) {
+                if ("+".equals(terms.get(i))) {
                     double resOfMul = Double.parseDouble(terms.get(i-1)) + Double.parseDouble(terms.get(i+1));
                     terms.set(i, Double.toString(resOfMul));
                     terms.remove(i+1);
                     terms.remove(i-1);
                     break;
                 }
-                else if (terms.get(i).equals("-")) {
+                else if ("-".equals(terms.get(i))) {
                     double resOfDiv = Double.parseDouble(terms.get(i-1)) - Double.parseDouble(terms.get(i+1));
                     terms.set(i, Double.toString(resOfDiv));
                     terms.remove(i+1);
