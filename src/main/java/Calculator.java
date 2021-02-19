@@ -121,7 +121,10 @@ public class Calculator {
 
     static private boolean checkExpressionWithoutBrackets(String expressionWithoutBrackets) {
         return expressionWithoutBrackets.matches(
-                "(((\\+|-)?\\d+\\.?\\d+)|((\\+|-)?\\d+)){1}" +
-                "(((\\+|-|\\*|/)(\\+|-)?\\d+\\.?\\d+)|((\\+|-|\\*|/)(\\+|-)?\\d+))*");
+          "(\\+|-)?" +
+                "((\\d+\\.?\\d+)|(\\d+)|Infinite|NaN){1}" +
+                "(\\+|-|\\*|/)" +
+                "(\\+|-)?" +
+                "((\\d+\\.?\\d+)|(\\d+)|Infinite|NaN)*");
     }
 }
